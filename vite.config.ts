@@ -10,50 +10,50 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  resolve: {
-    alias: {
-      '~/': `${path.resolve(__dirname, 'src')}/`,
+    resolve: {
+        alias: {
+            '~/': `${path.resolve(__dirname, 'src')}/`,
+        },
     },
-  },
 
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@use "~/styles/element/index.scss" as *;`,
-        api: 'modern-compiler',
-      },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                additionalData: `@use "~/styles/element/index.scss" as *;`,
+                api: 'modern-compiler',
+            },
+        },
     },
-  },
 
-  plugins: [
-    Vue(),
+    plugins: [
+        Vue(),
 
-    // https://github.com/posva/unplugin-vue-router
-    VueRouter({
-      extensions: ['.vue', '.md'],
-      dts: 'src/typed-router.d.ts',
-    }),
-
-    Components({
-      // allow auto load markdown components under `./src/components/`
-      extensions: ['vue', 'md'],
-      // allow auto import and register components used in markdown
-      include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
-      resolvers: [
-        ElementPlusResolver({
-          importStyle: 'sass',
+        // https://github.com/posva/unplugin-vue-router
+        VueRouter({
+            extensions: ['.vue', '.md'],
+            dts: 'src/typed-router.d.ts',
         }),
-      ],
-      dts: 'src/components.d.ts',
-    }),
 
-    // https://github.com/antfu/unocss
-    // see uno.config.ts for config
-    Unocss(),
-  ],
+        Components({
+            // allow auto load markdown components under `./src/components/`
+            extensions: ['vue', 'md'],
+            // allow auto import and register components used in markdown
+            include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
+            resolvers: [
+                ElementPlusResolver({
+                    importStyle: 'sass',
+                }),
+            ],
+            dts: 'src/components.d.ts',
+        }),
 
-  ssr: {
+        // https://github.com/antfu/unocss
+        // see uno.config.ts for config
+        Unocss(),
+    ],
+
+    ssr: {
     // TODO: workaround until they support native ESM
-    noExternal: ['element-plus'],
-  },
+        noExternal: ['element-plus'],
+    },
 })
