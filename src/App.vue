@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {computed} from 'vue'
-import {RouterView, useRoute} from 'vue-router'
+import { computed } from 'vue'
+import { RouterView, useRoute } from 'vue-router'
 
 const route = useRoute()
 const showHeader = computed(() => route.path !== '/login')
@@ -9,11 +9,11 @@ const showSide = computed(() => route.path !== '/login')
 
 <template>
     <el-config-provider namespace="ep">
-        <BaseHeader v-if="showHeader"/>
+        <BaseHeader v-if="showHeader" />
         <div class="main-container flex">
-            <BaseSide v-if="showSide"/>
+            <BaseSide v-if="showSide" />
             <div w="full" py="4">
-                <RouterView/>
+                <RouterView />
             </div>
         </div>
     </el-config-provider>
