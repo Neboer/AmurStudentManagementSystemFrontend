@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ComponentSize, FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 
 const login_form_ref = ref<FormInstance>()
@@ -95,7 +95,7 @@ async function submitForm(formEl: FormInstance | undefined) {
             </el-row>
             <el-form-item>
                 <el-checkbox v-model="login_form.remember_me">
-                    记住我
+                    30天内免登录
                 </el-checkbox>
             </el-form-item>
 
