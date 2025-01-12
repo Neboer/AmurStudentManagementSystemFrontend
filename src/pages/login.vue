@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
+import axios from 'axios'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref } from 'vue'
 
 const login_form_ref = ref<FormInstance>()
@@ -24,30 +26,59 @@ const rules = reactive<FormRules<LoginForm>>({
         { required: true, message: '请输入用户名', trigger: 'blur' },
     ],
     password: [
-        {
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur',
-        },
+        { required: true, message: '请输入密码', trigger: 'blur' },
     ],
     captcha: [
-        {
-            required: true,
-            message: '请输入验证码',
-            trigger: 'blur',
-        },
+        { required: true, message: '请输入验证码', trigger: 'blur' },
     ],
 })
+
+function alert_error(message: string) {
+    return ElMessageBox.alert(message, '登录错误', {
+        confirmButtonText: 'OK',
+    })
+}
+
+const login_button_loading = ref(false)
 
 async function submitForm(formEl: FormInstance | undefined) {
     if (!formEl)
         return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate(async (valid, _) => {
         if (valid) {
-            console.log('submit!')
-        }
-        else {
-            console.log('error submit!', fields)
+            try {
+                const login_result = await axios.post('/api/login', login_form)
+                if (login_result.status === 200) {
+                    ElMessage({
+                        message: '登录成功',
+                        type: 'success',
+                    })
+                }
+            }
+            catch (error: any) {
+                // 登录错误，检查错误原因
+                const error_reasons: Record<string, string> = {
+                    'Already logged in': '已经登录',
+                    'Incorrect captcha': '验证码错误',
+                    'Invalid username or password': '用户名或密码错误',
+                }
+
+                // 确保 error 是 axios 错误并检查其结构
+                if (axios.isAxiosError(error) && error.response?.data?.error) {
+                    const error_message = error.response.data.error
+                    if (error_message in error_reasons) {
+                        await alert_error(error_reasons[error_message])
+                    }
+                    else {
+                        await alert_error(error_message)
+                    }
+                }
+                else {
+                    // 处理未知错误
+                    await alert_error('发生未知错误，请稍后再试')
+                    console.error(error)
+                }
+            }
         }
     })
 }
@@ -55,7 +86,7 @@ async function submitForm(formEl: FormInstance | undefined) {
 
 <template>
     <div class="login-container">
-        <h1>登录笔管</h1>
+        <h1>用户登录</h1>
         <el-form
             ref="login_form_ref"
             :model="login_form" label-width="auto" label-position="top" status-icon
@@ -83,7 +114,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-image style="width: 166px; height: 50px; margin-top: 1rem;" src="https://picsum.photos/166/50" fit="fill">
+                    <el-image style="width: 166px; height: 50px; margin-top: 1rem;" src="/api/captcha" fit="fill">
                         <template #placeholder>
                             加载中...
                         </template>
@@ -101,7 +132,10 @@ async function submitForm(formEl: FormInstance | undefined) {
 
             <el-form-item>
                 <el-col :span="24">
-                    <el-button type="primary" class="w-full" @click="submitForm(login_form_ref)">
+                    <el-button
+                        type="primary" class="w-full" :loading="login_button_loading"
+                        @click="submitForm(login_form_ref)"
+                    >
                         登录
                     </el-button>
                 </el-col>
