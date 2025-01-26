@@ -1,6 +1,6 @@
 import type { UserModule } from './types'
+import axios from 'axios'
 import { ViteSSG } from 'vite-ssg'
-
 import { routes } from 'vue-router/auto-routes'
 import App from './App.vue'
 
@@ -26,5 +26,29 @@ export const createApp = ViteSSG(
     (ctx) => {
         Object.values(import.meta.glob<{ install: UserModule }>('./modules/*.ts', { eager: true }))
             .forEach(i => i.install?.(ctx))
+
+        ctx.router.beforeEach(async (to, from, next) => {
+            if (to.path === '/login') {
+                next()
+                return
+            }
+
+            try {
+                const response = await axios.get('/api/verify-session', {
+                    withCredentials: true,
+                })
+
+                if (response.data.status === 'ok') {
+                    next()
+                }
+                else {
+                    next({ path: '/login' })
+                }
+            }
+            catch (error) {
+                console.error('Session verification failed', error)
+                next({ path: '/login' })
+            }
+        })
     },
 )

@@ -3,8 +3,8 @@ import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 
 const route = useRoute()
-const showHeader = computed(() => route.path !== '/login')
-const showSide = computed(() => route.path !== '/login')
+const showHeader = computed(() => route.path !== '/login' && route.path !== '/logout')
+const showSide = computed(() => route.path !== '/login' && route.path !== '/logout')
 </script>
 
 <template>

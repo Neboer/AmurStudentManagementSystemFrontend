@@ -3,7 +3,9 @@ import type { FormInstance, FormRules } from 'element-plus'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const login_form_ref = ref<FormInstance>()
 
 interface LoginForm {
@@ -53,6 +55,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                         message: '登录成功',
                         type: 'success',
                     })
+                    await router.push('/home')
                 }
             }
             catch (error: any) {
@@ -114,7 +117,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-image style="width: 166px; height: 50px; margin-top: 1rem;" src="/api/captcha" fit="fill">
+                    <el-image style="width: 166px; height: 50px; margin-top: 1rem;" src="/api/captcha" fit="fill" id="captcha-img">
                         <template #placeholder>
                             加载中...
                         </template>
@@ -151,5 +154,10 @@ async function submitForm(formEl: FormInstance | undefined) {
     align-items: center;
     height: 80vh;
     flex-direction: column;
+}
+@media (prefers-color-scheme: dark) {
+    #captcha-img {
+        filter: invert(100%);
+    }
 }
 </style>
