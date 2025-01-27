@@ -3,7 +3,9 @@ import type { FormInstance, FormRules } from 'element-plus'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const login_form_ref = ref<FormInstance>()
 
 interface LoginForm {
@@ -53,6 +55,17 @@ async function submitForm(formEl: FormInstance | undefined) {
                         message: '登录成功',
                         type: 'success',
                     })
+                }
+                const self_result = await axios.get('/api/self', {
+                    withCredentials: true,
+                })
+                if (self_result.data && self_result.data.admin) {
+                    if (self_result.data.admin === true) {
+                        await router.push('/admin')
+                    }
+                    // else {
+                    //     await router.push('/home')
+                    // }
                 }
             }
             catch (error: any) {
