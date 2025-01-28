@@ -12,6 +12,7 @@ import 'element-plus/theme-chalk/src/message.scss'
 import 'element-plus/theme-chalk/src/message-box.scss'
 
 // code from https://github.com/posva/unplugin-vue-router/issues/107#issuecomment-2298388066
+// redirect / to /login, because we have no "homepage" so ...
 routes.push({
     path: '/',
     redirect: '/login',
