@@ -62,8 +62,6 @@ async function submitForm(formEl: FormInstance | undefined) {
                 }
             }
             catch (error: any) {
-                // TODO: consider separate the constants into a separate file
-                // FIXME: it's kind of improper to use hardcoded error reason strings... but okay... it's fine
                 // 登录错误，检查错误原因
                 const error_reasons: Record<string, string> = {
                     'Already logged in': '已经登录',
@@ -124,7 +122,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                 </el-col>
                 <el-col :span="12">
                     <el-image
-                        style="width: 166px; height: 50px; margin-top: 1rem;" :src="captcha_url" fit="fill"
+                        style="width: 166px; height: 50px; margin-top: 1rem;" :src="captcha_url" fit="fill" id="captcha-img"
                         @click="update_captcha"
                     >
                         <template #placeholder>
@@ -163,5 +161,10 @@ async function submitForm(formEl: FormInstance | undefined) {
     align-items: center;
     height: 80vh;
     flex-direction: column;
+}
+@media (prefers-color-scheme: dark) {
+    #captcha-img {
+        filter: invert(100%);
+    }
 }
 </style>
