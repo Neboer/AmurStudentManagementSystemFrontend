@@ -21,6 +21,12 @@ const login_form = reactive<LoginForm>({
     remember_me: false,
 })
 
+const captcha_url = ref('/api/captcha')
+
+function update_captcha() {
+    captcha_url.value = `${captcha_url.value}?timestamp=${Date.now()}`
+}
+
 const rules = reactive<FormRules<LoginForm>>({
     username: [
         { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -56,6 +62,8 @@ async function submitForm(formEl: FormInstance | undefined) {
                 }
             }
             catch (error: any) {
+                // TODO: consider separate the constants into a separate file
+                // FIXME: it's kind of improper to use hardcoded error reason strings... but okay... it's fine
                 // 登录错误，检查错误原因
                 const error_reasons: Record<string, string> = {
                     'Already logged in': '已经登录',
@@ -78,6 +86,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                     await alert_error('发生未知错误，请稍后再试')
                     console.error(error)
                 }
+                update_captcha()
             }
         }
     })
@@ -114,7 +123,10 @@ async function submitForm(formEl: FormInstance | undefined) {
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-image style="width: 166px; height: 50px; margin-top: 1rem;" src="/api/captcha" fit="fill">
+                    <el-image
+                        style="width: 166px; height: 50px; margin-top: 1rem;" :src="captcha_url" fit="fill"
+                        @click="update_captcha"
+                    >
                         <template #placeholder>
                             加载中...
                         </template>
