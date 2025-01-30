@@ -12,7 +12,7 @@ const showSide = computed(() => route.path !== '/login')
         <BaseHeader v-if="showHeader" />
         <div class="main-container flex">
             <BaseSide v-if="showSide" />
-            <div w="full" py="4">
+            <div w="full" py="4" class="p-5">
                 <RouterView />
             </div>
         </div>
