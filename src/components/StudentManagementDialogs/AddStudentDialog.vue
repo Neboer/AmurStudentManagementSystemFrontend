@@ -4,10 +4,7 @@ import { defineExpose, defineModel, ref, reactive, watch } from 'vue'
 // import { default_add_student_dialog_form } from '~/components/StudentManagementDialogs/StudentForm'
 import axios_element_handle_error from '~/snippets/axios_handle_error'
 
-const student_dialog_visible = defineModel<boolean>('student_dialog_visible', {
-    type: Boolean,
-    default: false,
-})
+const add_student_dialog_visible = ref<boolean>(false)
 
 export interface AddStudentDialogForm {
     name: string
@@ -21,10 +18,6 @@ const student_dialog_form = reactive<AddStudentDialogForm>({
     phone_number: '',
     init_password: '',
     set_init_password_same_as_phone_number: true,
-})
-
-defineExpose({
-    student_dialog_form,
 })
 
 const loading = ref(false)
@@ -50,14 +43,29 @@ async function add_student() {
         })
     }, '添加成功', loading)
     reset_student_dialog_form()
-    student_dialog_visible.value = false
+    add_student_dialog_visible.value = false
     emit('onAfterAddStudent')
 }
 
 function on_exit_dialog() {
     reset_student_dialog_form()
-    student_dialog_visible.value = false
+    add_student_dialog_visible.value = false
 }
+
+function open_dialog() {
+    add_student_dialog_visible.value = true
+}
+
+function close_dialog() {
+    add_student_dialog_visible.value = false
+    reset_student_dialog_form()
+}
+
+defineExpose({
+    student_dialog_form,
+    open_dialog,
+    close_dialog
+})
 
 watch(student_dialog_form, (value) => {
     if (student_dialog_form.set_init_password_same_as_phone_number) {
@@ -67,7 +75,7 @@ watch(student_dialog_form, (value) => {
 </script>
 
 <template>
-    <el-dialog v-model="student_dialog_visible" title="添加新学生" width="500">
+    <el-dialog v-model="add_student_dialog_visible" title="添加新学生" width="500">
         <el-form :model="student_dialog_form">
             <el-form-item label="学生姓名" label-width="140px" required>
                 <el-input v-model="student_dialog_form.name" />

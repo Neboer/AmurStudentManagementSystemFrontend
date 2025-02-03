@@ -20,13 +20,13 @@ const status_code_table: Record<number, string> = {
 
 const element_alert_error: AlertErrorFunc = (title: string, message: string) => {
     return ElMessageBox.alert(message, title, {
-        confirmButtonText: 'OK',
+        confirmButtonText: '确认',
     })
 }
 
 export default async function axios_element_handle_error<T>(
     request_func: RequestFunc<T>,
-    success_message: string,
+    success_message: string | null = null,
     loading_ref_control: Ref<boolean> | null = null,
     error_code_table: ErrorCodeTable = {},
 ): Promise<T | null> {
@@ -35,10 +35,11 @@ export default async function axios_element_handle_error<T>(
     }
     try {
         const result = await request_func()
-        ElMessage({
-            message: success_message,
-            type: 'success',
-        })
+        if (success_message)
+            ElMessage({
+                message: success_message,
+                type: 'success',
+            })
         return result
     }
     catch (error) {
