@@ -1,47 +1,41 @@
-# element-plus-vite-starter
+# ScholarInk 学墨家校综合管理系统
 
-> A starter kit for Element Plus with Vite
+注册老师和学生登录系统,可以实现管理学生 管理考试 管理学生考试成绩的功能.
 
-- Preview: <https://vite-starter.element-plus.org>
+## 基本功能
 
-This is an example of on-demand element-plus with [unplugin-vue-components](https://github.com/antfu/unplugin-vue-components).
+- [x] 系统登录
+- [ ] 修改密码
+- [ ] 注销登录
 
-> If you want to import all, it may be so simple that no examples are needed. Just follow [quickstart | Docs](https://element-plus.org/zh-CN/guide/quickstart.html) and import them.
+## 管理员功能
 
-If you just want an on-demand import example `manually`, you can check [unplugin-element-plus/examples/vite](https://github.com/element-plus/unplugin-element-plus/tree/main/examples/vite).
+### 管理学生
 
-If you want to a nuxt starter, see [element-plus-nuxt-starter](https://github.com/element-plus/element-plus-nuxt-starter/).
+- [x] 展示学生列表
+- [x] 添加学生
+- [x] 删除学生
+- [x] 修改学生
+- [ ] 重置学生密码
 
-## Project setup
+### 管理考试
 
-```bash
-pnpm install
+- [ ] 展示考试列表
+- [ ] 添加考试
+- [ ] 删除考试
+- [ ] 修改考试信息
+    - [ ] 修改考试基本信息
+    - [ ] 修改考试科目信息(满分等)
 
-# npm install
-# yarn install
-```
+### 管理学生考试成绩
 
-### Compiles and hot-reloads for development
+- [ ] 展示一场考试中的学生成绩(主要)
+    - [ ] 排名展示
+- [ ] 展示一位学生在所有考试中的成绩
+- [ ] 添加/修改/删除 学生的考试成绩
 
-```bash
-npm run dev
-```
+## 学生功能
 
-### Compiles and minifies for production
-
-```bash
-npm run build
-```
-
-## Usage
-
-```bash
-git clone https://github.com/element-plus/element-plus-vite-starter
-cd element-plus-vite-starter
-npm i
-npm run dev
-```
-
-### Custom theme
-
-See `src/styles/element/index.scss`.
+- [ ] 展示考试列表
+- [ ] 查看在某次考试中自己的成绩和排名
+- [ ] 根据管理员提供的链接重置自己的密码
