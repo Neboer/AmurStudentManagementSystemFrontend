@@ -1,6 +1,9 @@
 import type { Ref } from 'vue'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElLoading } from 'element-plus'
+import { LoadingInstance } from 'element-plus/lib/components/loading/src/loading.js'
+
 
 type ErrorCodeTable = Record<string, string>
 
@@ -27,12 +30,19 @@ const element_alert_error: AlertErrorFunc = (title: string, message: string) => 
 export default async function axios_element_handle_error<T>(
     request_func: RequestFunc<T>,
     success_message: string | null = null,
-    loading_ref_control: Ref<boolean> | null = null,
+    loading_ref_control: Ref<boolean> | null | 'global' = null,
     error_code_table: ErrorCodeTable = {},
 ): Promise<T | null> {
-    if (loading_ref_control) {
+    // if (loading_ref_control && loading_ref_control !== 'global') {
+    const loading_ref_control_is_global = loading_ref_control === 'global'
+    let global_loading_instance: LoadingInstance | null = null
+
+    if (loading_ref_control_is_global) {
+        global_loading_instance = ElLoading.service({ fullscreen: true })
+    } else if (loading_ref_control) {
         loading_ref_control.value = true
     }
+
     try {
         const result = await request_func()
         if (success_message)
@@ -69,7 +79,9 @@ export default async function axios_element_handle_error<T>(
         return null
     }
     finally {
-        if (loading_ref_control) {
+        if (loading_ref_control_is_global) {
+            global_loading_instance?.close()
+        } else if (loading_ref_control) {
             loading_ref_control.value = false
         }
     }

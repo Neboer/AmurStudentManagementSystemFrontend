@@ -3,6 +3,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref } from 'vue'
+import refresh_and_redirect_user_by_identity from '~/snippets/redirect_user_by_identity'
 
 const login_form_ref = ref<FormInstance>()
 
@@ -47,6 +48,7 @@ function alert_error(message: string) {
 
 const login_button_loading = ref(false)
 
+
 async function submitForm(formEl: FormInstance | undefined) {
     if (!formEl)
         return
@@ -60,6 +62,8 @@ async function submitForm(formEl: FormInstance | undefined) {
                         type: 'success',
                     })
                 }
+                // 成功登录，刷新用户身份，然后重定向
+                await refresh_and_redirect_user_by_identity()
             }
             catch (error: any) {
                 // 登录错误，检查错误原因
