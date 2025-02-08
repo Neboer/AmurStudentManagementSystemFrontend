@@ -27,19 +27,24 @@ export async function refresh_user_identity(userStore: any) {
             userStore.student_login(user_data.id, user_data.name!, user_data.phone_number!)
         }
     }, null, "global", {
-        "Unauthorized": "" // 忽略未登录的错误，因为这是正常情况。
+        "Unauthorized": "" // 忽略未登录的错误，如果用户没登录就这样吧。
     })
+}
+
+export function get_default_route_by_identity(userStore: TUserStore): string {
+    if (userStore.identity === Identity.Admin) {
+        return '/admin/StudentManagement'
+    } else if (userStore.identity === Identity.Student) {
+        return '/student/SomePage'
+    } else {
+        return '/login'
+    }
 }
 
 // 根据用户的身份重定向到不同的页面
 export function redirect_user_by_identity(router: Router, userStore: TUserStore) {
-    if (userStore.identity === Identity.Admin) {
-        router.push('/admin/StudentManagement')
-    } else if (userStore.identity === Identity.Student) {
-        router.push('/student/SomePage')
-    } else {
-        router.push('/login')
-    }
+    const default_route = get_default_route_by_identity(userStore)
+    router.push(default_route)
 }
 
 export default async function refresh_and_redirect_user_by_identity(router: Router, userStore: TUserStore) {
