@@ -1,9 +1,9 @@
 // 根据当前用户的身份，重定向到用户的主页。管理员的主页是StudentManagement，。
-import { useRouter } from 'vue-router'
-import { useUserStore } from '../app-store'
 import axios from 'axios'
 import axios_element_handle_error from './axios_handle_error'
 import { Identity } from '~/types/UserIdentity'
+import { Router } from 'vue-router'
+import { TUserStore } from '~/app-store'
 
 
 interface UserIdentityData {
@@ -17,9 +17,7 @@ interface UserIdentityData {
 }
 
 // 向服务器请求用户的身份信息，并根据身份信息更新用户的身份
-export async function refresh_user_identity() {
-    const userStore = useUserStore()
-    
+export async function refresh_user_identity(userStore: any) {
     await axios_element_handle_error(async () => {
         const response = await axios.get('/api/self')
         const user_data: UserIdentityData = response.data
@@ -29,15 +27,12 @@ export async function refresh_user_identity() {
             userStore.student_login(user_data.id, user_data.name!, user_data.phone_number!)
         }
     }, null, "global", {
-        "Unauthorized": "请先登录"
+        "Unauthorized": "" // 忽略未登录的错误，因为这是正常情况。
     })
 }
 
 // 根据用户的身份重定向到不同的页面
-export function redirect_user_by_identity() {
-    const router = useRouter()
-    const userStore = useUserStore()
-
+export function redirect_user_by_identity(router: Router, userStore: TUserStore) {
     if (userStore.identity === Identity.Admin) {
         router.push('/admin/StudentManagement')
     } else if (userStore.identity === Identity.Student) {
@@ -47,7 +42,7 @@ export function redirect_user_by_identity() {
     }
 }
 
-export default async function refresh_and_redirect_user_by_identity() {
-    await refresh_user_identity()
-    redirect_user_by_identity()
+export default async function refresh_and_redirect_user_by_identity(router: Router, userStore: TUserStore) {
+    await refresh_user_identity(userStore)
+    redirect_user_by_identity(router, userStore)
 }

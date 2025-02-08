@@ -32,3 +32,5 @@ export const useUserStore = defineStore('user', {
         }
     }
 })
+
+export type TUserStore = ReturnType<typeof useUserStore>

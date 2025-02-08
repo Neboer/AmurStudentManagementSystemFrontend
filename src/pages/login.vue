@@ -2,8 +2,18 @@
 import type { FormInstance, FormRules } from 'element-plus'
 import axios from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '~/app-store'
 import refresh_and_redirect_user_by_identity from '~/snippets/redirect_user_by_identity'
+
+const router = useRouter()
+const user_store = useUserStore()
+
+// 用户访问此页面时，如果已经登录，则重定向到用户首页
+onMounted(async () => {
+    await refresh_and_redirect_user_by_identity(router, user_store)
+})
 
 const login_form_ref = ref<FormInstance>()
 
@@ -63,7 +73,7 @@ async function submitForm(formEl: FormInstance | undefined) {
                     })
                 }
                 // 成功登录，刷新用户身份，然后重定向
-                await refresh_and_redirect_user_by_identity()
+                await refresh_and_redirect_user_by_identity(router, user_store)
             }
             catch (error: any) {
                 // 登录错误，检查错误原因
@@ -98,37 +108,24 @@ async function submitForm(formEl: FormInstance | undefined) {
 <template>
     <div class="login-container">
         <h1>用户登录</h1>
-        <el-form
-            ref="login_form_ref"
-            :model="login_form" label-width="auto" label-position="top" status-icon
-            :rules="rules"
-        >
+        <el-form ref="login_form_ref" :model="login_form" label-width="auto" label-position="top" status-icon
+            :rules="rules">
             <el-form-item label="用户名" prop="username">
                 <el-input v-model="login_form.username" placeholder="请输入用户名" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
-                <el-input
-                    v-model="login_form.password"
-                    type="password"
-                    placeholder="请输入密码"
-                    show-password
-                />
+                <el-input v-model="login_form.password" type="password" placeholder="请输入密码" show-password />
             </el-form-item>
 
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form-item label="验证码" style="align-items: center" prop="captcha">
-                        <el-input
-                            v-model="login_form.captcha"
-                            placeholder="请输入右侧图像中内容"
-                        />
+                        <el-input v-model="login_form.captcha" placeholder="请输入右侧图像中内容" />
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                    <el-image
-                        style="width: 166px; height: 50px; margin-top: 1rem;" :src="captcha_url" fit="fill" id="captcha-img"
-                        @click="update_captcha"
-                    >
+                    <el-image style="width: 166px; height: 50px; margin-top: 1rem;" :src="captcha_url" fit="fill"
+                        id="captcha-img" @click="update_captcha">
                         <template #placeholder>
                             加载中...
                         </template>
@@ -146,10 +143,8 @@ async function submitForm(formEl: FormInstance | undefined) {
 
             <el-form-item>
                 <el-col :span="24">
-                    <el-button
-                        type="primary" class="w-full" :loading="login_button_loading"
-                        @click="submitForm(login_form_ref)"
-                    >
+                    <el-button type="primary" class="w-full" :loading="login_button_loading"
+                        @click="submitForm(login_form_ref)">
                         登录
                     </el-button>
                 </el-col>
@@ -166,6 +161,7 @@ async function submitForm(formEl: FormInstance | undefined) {
     height: 80vh;
     flex-direction: column;
 }
+
 @media (prefers-color-scheme: dark) {
     #captcha-img {
         filter: invert(100%);

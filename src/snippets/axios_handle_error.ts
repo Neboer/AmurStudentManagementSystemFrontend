@@ -61,9 +61,14 @@ export default async function axios_element_handle_error<T>(
             else {
                 const { status, data } = error.response
                 if (data && data.error) {
-                    // 使用 error_code_table 查找错误信息
-                    const real_error_msg = error_code_table[data.error] || data.error
-                    element_alert_error('请求错误', real_error_msg)
+                    // 如果 error_code_table[data.error] 为''，则说明此错误被显式的忽略，不显示错误信息
+                    if (error_code_table[data.error] === '') {
+                        return null
+                    } else {
+                        // 使用 error_code_table 查找错误信息
+                        const real_error_msg = error_code_table[data.error] || data.error
+                        element_alert_error('请求错误', real_error_msg)
+                    }
                 }
                 else {
                     // 根据 status_code_table 查找错误信息
