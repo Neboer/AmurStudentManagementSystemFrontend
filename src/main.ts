@@ -12,7 +12,7 @@ import 'element-plus/theme-chalk/src/message.scss'
 import 'element-plus/theme-chalk/src/message-box.scss'
 import { createPinia } from 'pinia'
 import { useUserStore } from '~/app-store'
-import redirect_user_by_identity, { refresh_user_identity, get_default_route_by_identity } from './snippets/redirect_user_by_identity'
+import redirect_user_by_identity, { refresh_user_identity, get_default_route_by_identity } from './composables/redirect_user_by_identity'
 import { Identity } from './types/UserIdentity'
 import { allow_access_page } from './types/UserIdentity'
 

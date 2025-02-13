@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import axios from 'axios'
 import { defineExpose, defineModel, ref, reactive, watch, watchEffect, onMounted } from 'vue'
-import axios_element_handle_error from '~/snippets/axios_handle_error'
+import useHandleError from '~/composables/axios_handle_error'
 
 const update_student_dialog_visible = ref<boolean>(false)
 
@@ -30,7 +30,7 @@ const emit = defineEmits<{
 const student_id = ref<number | null>(null)
 
 async function update_student() {
-    await axios_element_handle_error(async () => {
+    await useHandleError(async () => {
         return await axios.put(`/api/student/${student_id.value}`, {
             name: student_update_dialog_form.name,
             phone_number: student_update_dialog_form.phone_number,
@@ -52,7 +52,7 @@ async function get_student_info() {
     if (student_id.value === null) {
         return
     } else {
-        await axios_element_handle_error(async () => {
+        await useHandleError(async () => {
             axios.get(`/api/student/${student_id.value}`).then((response) => {
                 student_update_dialog_form.name = response.data.name
                 student_update_dialog_form.phone_number = response.data.phone_number

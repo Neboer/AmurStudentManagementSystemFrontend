@@ -1,18 +1,29 @@
 <script lang="ts" setup>
 import axios from 'axios'
+import { Action, ElMessage, ElMessageBox } from 'element-plus'
 import { onMounted, ref } from 'vue'
-import AddStudentDialog from '~/components/StudentManagementDialogs/AddStudentDialog.vue'
-import UpdateStudentDialog from '~/components/StudentManagementDialogs/UpdateStudentDialog.vue'
-import open_delete_dialog from '~/snippets/configm_delete_dialog'
+import type AddStudentDialog from '~/components/StudentManagementDialogs/AddStudentDialog.vue'
+import type UpdateStudentDialog from '~/components/StudentManagementDialogs/UpdateStudentDialog.vue'
+import useHandleError from '~/composables/axios_handle_error'
+import useDeleteDialog from '~/composables/configm_delete_dialog'
 
-const student_table_data = ref([])
-const table_loading = ref(true)
+interface StudentInfo {
+    id?: number;
+    name: string;
+    phone_number: string;
+}
 
+const student_table_data = ref<StudentInfo[]>([])
+const table_loading = ref<boolean>(true)
+
+// TODO: 刷新学生表格时页面会闪烁，考虑优化
 async function refresh_student_table() {
-    await axios.get('/api/student').then((response) => {
-        student_table_data.value = response.data
-        table_loading.value = false
-    })
+    useHandleError(async () => {
+        await axios.get('/api/student').then((response) => {
+            student_table_data.value = response.data
+            table_loading.value = false
+        })
+    }, null, table_loading, {})
 }
 
 onMounted(() => {
@@ -33,17 +44,23 @@ function on_click_edit_student(student_id: number) {
 }
 
 async function on_click_delete_student(student_id: number, student_name: string) {
-    const user_confirm_delete = await open_delete_dialog(`确定删除学生${student_name}？`, '成功删除学生')
-    if (user_confirm_delete) {
-        await axios.delete(`/api/student/${student_id}`)
-        refresh_student_table()
-    }
+    useDeleteDialog(`确定删除学生${student_name}？`).then((user_confirm_delete) => {
+        if (user_confirm_delete) {
+            useHandleError(async () => {
+                await axios.delete(`/api/student/${student_id}`)
+                refresh_student_table()
+            }, '成功删除', table_loading, {})
+        }
+    })
 }
 </script>
 
 <template>
     <el-button type="primary" @click="add_student_dialog_ref?.open_dialog()">
         添加学生
+    </el-button>
+    <el-button type="primary" @click="refresh_student_table()">
+        刷新
     </el-button>
     <add-student-dialog @on-after-add-student="refresh_student_table" ref="add_student_dialog_ref" />
     <update-student-dialog @on-after-update-student="refresh_student_table" ref="update_student_dialog_ref" />

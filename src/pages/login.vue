@@ -5,7 +5,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '~/app-store'
-import refresh_and_redirect_user_by_identity from '~/snippets/redirect_user_by_identity'
+import refresh_and_redirect_user_by_identity from '~/composables/redirect_user_by_identity'
 
 const router = useRouter()
 const user_store = useUserStore()

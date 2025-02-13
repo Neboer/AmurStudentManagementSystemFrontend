@@ -2,7 +2,7 @@
 import axios from 'axios'
 import { defineExpose, defineModel, ref, reactive, watch } from 'vue'
 // import { default_add_student_dialog_form } from '~/components/StudentManagementDialogs/StudentForm'
-import axios_element_handle_error from '~/snippets/axios_handle_error'
+import useHandleError from '~/composables/axios_handle_error'
 
 const add_student_dialog_visible = ref<boolean>(false)
 
@@ -22,7 +22,6 @@ const student_dialog_form = reactive<AddStudentDialogForm>({
 
 const loading = ref(false)
 
-
 function reset_student_dialog_form() {
     student_dialog_form.name = ''
     student_dialog_form.phone_number = ''
@@ -31,20 +30,21 @@ function reset_student_dialog_form() {
 }
 
 const emit = defineEmits<{
-  (e: 'onAfterAddStudent'): void
+    (e: 'onAfterAddStudent'): void
 }>()
 
 async function add_student() {
-    await axios_element_handle_error(async () => {
+    useHandleError(async () => {
         return await axios.post('/api/student', {
             name: student_dialog_form.name,
             phone_number: student_dialog_form.phone_number,
             init_password: student_dialog_form.init_password,
         })
-    }, '添加成功', loading)
-    reset_student_dialog_form()
-    add_student_dialog_visible.value = false
-    emit('onAfterAddStudent')
+    }, '添加成功', loading).then(() => {
+        reset_student_dialog_form()
+        add_student_dialog_visible.value = false
+        emit('onAfterAddStudent')
+    })
 }
 
 function on_exit_dialog() {

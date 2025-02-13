@@ -7,9 +7,9 @@ import { useUserStore } from '~/app-store'
 import { Identity } from '~/types/UserIdentity'
 import { computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { redirect_user_by_identity, refresh_user_identity } from '~/snippets/redirect_user_by_identity'
+import { redirect_user_by_identity, refresh_user_identity } from '~/composables/redirect_user_by_identity'
 import axios from 'axios'
-import axios_element_handle_error from '~/snippets/axios_handle_error'
+import axios_element_handle_error from '~/composables/axios_handle_error'
 
 
 const user_store = useUserStore()
