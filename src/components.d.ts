@@ -40,6 +40,7 @@ declare module 'vue' {
     MessageBoxDemo: typeof import('./components/MessageBoxDemo.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UpdateExamBaseInfoDialog: typeof import('./components/ExamManagementDialogs/UpdateExamBaseInfoDialog.vue')['default']
     UpdateStudentDialog: typeof import('./components/StudentManagementDialogs/UpdateStudentDialog.vue')['default']
   }
   export interface ComponentCustomProperties {
