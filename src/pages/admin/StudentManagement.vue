@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { Plus, Refresh } from '@element-plus/icons-vue'
 import axios from 'axios'
 import { Action, ElMessage, ElMessageBox } from 'element-plus'
 import { onMounted, ref } from 'vue'
@@ -56,10 +57,10 @@ async function on_click_delete_student(student_id: number, student_name: string)
 </script>
 
 <template>
-    <el-button type="primary" @click="add_student_dialog_ref?.open_dialog()">
+    <el-button type="primary" :icon="Plus" @click="add_student_dialog_ref?.open_dialog()">
         添加学生
     </el-button>
-    <el-button type="primary" @click="refresh_student_table()">
+    <el-button type="default" :icon="Refresh" @click="refresh_student_table()">
         刷新
     </el-button>
     <add-student-dialog @on-after-add-student="refresh_student_table" ref="add_student_dialog_ref" />
