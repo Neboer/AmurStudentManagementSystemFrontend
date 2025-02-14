@@ -8,7 +8,7 @@ const add_exam_dialog_visible = ref<boolean>(false)
 
 export interface ExamSubjectForm {
     subject: string
-    full_score: number | null
+    full_score: number
 }
 
 interface AddExamDialogForm {
@@ -75,16 +75,16 @@ async function add_exam() {
         '考试创建成功',
         loading,
         {}
-    )
-
-    // 3. 请求成功后执行后续操作
-    reset_exam_dialog_form()
-    add_exam_dialog_visible.value = false
-    emit('onAfterAddExam')
+    ).then(() => {
+        // 3. 请求成功后执行后续操作
+        add_exam_dialog_visible.value = false
+        emit('onAfterAddExam')
+        reset_exam_dialog_form()
+    })
 }
 
 function add_subject() {
-    exam_dialog_form.subjects.push({ subject: '', full_score: null })
+    exam_dialog_form.subjects.push({ subject: '', full_score: 100 })
 }
 
 function remove_subject(index: number) {
