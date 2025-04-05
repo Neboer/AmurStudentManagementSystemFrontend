@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
-import open_delete_dialog from '~/composables/configm_delete_dialog'
+import open_delete_dialog from '~/composables/confirm_delete_dialog'
 import AddExamDialog from '~/components/ExamManagementDialogs/AddExamDialog.vue'
 import UpdateExamBaseInfoDialog from '~/components/ExamManagementDialogs/UpdateExamBaseInfoDialog.vue'
+import UpdateExamSubjectDialog from '~/components/ExamManagementDialogs/UpdateExamSubjectDialog.vue'
 import useHandleError from '~/composables/axios_handle_error'
 import { Plus, Refresh } from '@element-plus/icons-vue'
 
@@ -54,8 +55,10 @@ function on_click_edit_exam_basic_info(exam_id: number) {
     update_exam_dialog_ref.value?.open_dialog(exam_id)
 }
 
+// 编辑考试科目处理
+const update_exam_subject_dialog_ref = ref<InstanceType<typeof UpdateExamSubjectDialog> | null>(null)
 function on_click_edit_exam_subject_info(exam_id: number) {
-    console.log('待实现编辑考试科目功能，考试ID:', exam_id)
+    update_exam_subject_dialog_ref.value?.open_dialog(exam_id)
 }
 
 </script>
@@ -73,6 +76,9 @@ function on_click_edit_exam_subject_info(exam_id: number) {
 
         <add-exam-dialog @on-after-add-exam="refresh_exam_table" ref="add_exam_dialog_ref" />
         <update-exam-base-info-dialog @on-after-update-exam="refresh_exam_table" ref="update_exam_dialog_ref"/>
+            <update-exam-subject-dialog 
+                ref="update_exam_subject_dialog_ref" 
+                @subjects-updated="refresh_exam_table" />
         <!-- 考试数据表格 -->
         <el-table v-loading="table_loading" :data="exam_table_data" stripe style="width: 100%" empty-text="暂无考试数据" :default-sort="{ prop: 'date', order: 'ascending' }">
             <el-table-column prop="name" label="考试名称"/>

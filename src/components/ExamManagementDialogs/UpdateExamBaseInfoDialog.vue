@@ -39,7 +39,7 @@ async function fetch_exam_info() {
         async () => {
             const response = await axios.get(`/api/exam/${exam_id.value}`)
             exam_update_form.name = response?.data.name
-            exam_update_form.date = response?.data.date
+            exam_update_form.date = (new Date(response?.data.date)).toISOString().split('T')[0]
         },
         null,
         info_loading,

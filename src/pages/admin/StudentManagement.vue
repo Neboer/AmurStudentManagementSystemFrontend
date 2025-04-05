@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 import type AddStudentDialog from '~/components/StudentManagementDialogs/AddStudentDialog.vue'
 import type UpdateStudentDialog from '~/components/StudentManagementDialogs/UpdateStudentDialog.vue'
 import useHandleError from '~/composables/axios_handle_error'
-import useDeleteDialog from '~/composables/configm_delete_dialog'
+import useDeleteDialog from '~/composables/confirm_delete_dialog'
 
 interface StudentInfo {
     id?: number;

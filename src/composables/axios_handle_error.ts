@@ -80,6 +80,7 @@ export default function useHandleError<T>(
             else {
                 // 其他未知错误
                 element_alert_error('未知错误', '发生了未知错误，请稍后重试。')
+                console.error(error)
             }
             return null
         }
